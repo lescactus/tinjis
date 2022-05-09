@@ -1,6 +1,16 @@
 version: '3'
 services:
   pleo-antaeus:
-    build: .
+    build: antaeus/
     ports:
      - "8000:8000"
+    environment:
+      PAYMENT_PROVIDER_ENDPOINT: "http://payment:8080/rest/v1/charge"
+    depends_on:
+      - payment
+  
+  payment:
+    build: payment/
+    ports:
+      - "8080:8080"
+    

@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: antaeus
+  namespace: antaeus
+  labels:
+    app: antaeus
+spec:
+  selector:
+    matchLabels:
+      app: antaeus
+  template:
+    metadata:
+      labels:
+        app: antaeus
+    spec:
+      containers:
+      - name: antaeus
+        image: lescactus/antaeus
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+        env:
+          - name: PAYMENT_PROVIDER_ENDPOINT
+            value: http://payment.payment.svc.cluster.local/rest/v1/charge
+        readinessProbe:
+          httpGet:
+            path: /rest/health
+            port: 8000
+          initialDelaySeconds: 3
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /rest/health
+            port: 8000
+          initialDelaySeconds: 3
+          periodSeconds: 10
+          successThreshold: 1
+        startupProbe: # startupProbe to protect against slow server startup
+          httpGet:
+            path: /rest/health
+            port: 8000
+          failureThreshold: 15
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          successThreshold: 1
+        resources:
+          requests:
+            memory: "500Mi"
+            cpu: "500m"
+          limits:
+            memory: "1024Mi"
