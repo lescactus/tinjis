@@ -39,3 +39,8 @@ spec:
             cpu: "10m"
           limits:
             memory: "16Mi"
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 1000
+        runAsNonRoot: true
+      serviceAccountName: payment

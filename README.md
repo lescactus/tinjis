@@ -140,10 +140,12 @@ To deploy `antaeus` and `payment`, run:
 
 ```sh
 kubectl create -f antaeus/deploy/namespace.yaml
+kubectl create -f antaeus/deploy/serviceaccount.yaml
 kubectl create -f antaeus/deploy/deployment.yaml
 kubectl create -f antaeus/deploy/service.yaml
 
 kubectl create -f payment/deploy/namespace.yaml
+kubectl create -f payment/deploy/serviceaccount.yaml
 kubectl create -f payment/deploy/deployment.yaml
 kubectl create -f payment/deploy/service.yaml
 ```
@@ -268,5 +270,7 @@ Another answer could be using a Service Mesh such as [Istio](https://istio.io/) 
 #### `antaeus`
 
 * Antaeus doesn't serialize properly the `Currency` enum class. The json payload sent to the `payment` service looks like: `{"currency":{},"customer_id":1,"value":301.99}`. Is it a bug or a feature ?
+
+* Antaeus container is running as `root` user which is a massive security risk. A potential mitigation is adding an user from the Dockerfile and swich to it with the `USER` instruction.
 
 </details>
